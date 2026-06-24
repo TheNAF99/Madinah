@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>رحلة المدينة المنورة — ٢٥ يونيو ٢٠٢٦</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1D9E75;
+    --green-light: #E1F5EE;
+    --green-dark: #085041;
+    --amber: #BA7517;
+    --amber-light: #FAEEDA;
+    --blue: #185FA5;
+    --blue-light: #E6F1FB;
+    --pink: #D4537E;
+    --pink-light: #FBEAF0;
+    --purple: #534AB7;
+    --purple-light: #EEEDFE;
+    --gray: #5F5E5A;
+    --gray-light: #F1EFE8;
+    --text: #1a1a18;
+    --text-muted: #5F5E5A;
+    --border: rgba(0,0,0,0.1);
+    --bg: #faf9f6;
+    --card: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Tajawal', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(160deg, #0a2e24 0%, #0f4a39 50%, #1D9E75 100%);
+    padding: 80px 24px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .hero-eyebrow { font-size: 13px; font-weight: 400; color: rgba(255,255,255,0.6); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(32px, 6vw, 52px); font-weight: 700; color: #fff; margin-bottom: 16px; line-height: 1.2; }
+  .hero-sub { font-size: 16px; color: rgba(255,255,255,0.7); margin-bottom: 40px; }
+  .hero-stats { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+  .stat { text-align: center; }
+  .stat-num { font-size: 28px; font-weight: 700; color: #fff; }
+  .stat-label { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+
+  /* Prayer bar */
+  .prayer-section {
+    background: var(--green-dark);
+    padding: 14px 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .prayer-label { font-size: 12px; color: rgba(255,255,255,0.6); margin-left: 8px; }
+  .prayer-pill {
+    font-size: 11px; font-weight: 500; padding: 4px 12px;
+    border-radius: 20px; background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.9);
+  }
+  .prayer-pill.special { background: var(--pink); color: #fff; }
+
+  /* Days nav */
+  .days-nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: center;
+  }
+  .day-tab {
+    padding: 16px 32px; font-size: 14px; font-weight: 500;
+    color: var(--text-muted); cursor: pointer; border: none;
+    background: transparent; border-bottom: 3px solid transparent;
+    transition: all 0.2s; font-family: 'Tajawal', sans-serif;
+  }
+  .day-tab:hover { color: var(--green); }
+  .day-tab.active { color: var(--green); border-bottom-color: var(--green); }
+
+  /* Main content */
+  .content { max-width: 720px; margin: 0 auto; padding: 40px 20px 80px; }
+  .day-panel { display: none; }
+  .day-panel.active { display: block; }
+
+  .day-header { margin-bottom: 32px; }
+  .day-date { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
+  .day-title { font-size: 24px; font-weight: 700; }
+
+  /* Timeline */
+  .timeline { position: relative; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    right: 71px;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: var(--border);
+  }
+  .tl-item { display: flex; gap: 0; margin-bottom: 20px; align-items: flex-start; }
+  .tl-time {
+    min-width: 56px; font-size: 12px; font-weight: 500;
+    color: var(--text-muted); padding-top: 2px; text-align: right;
+    padding-left: 8px;
+  }
+  .tl-dot-wrap { width: 32px; display: flex; justify-content: center; padding-top: 4px; position: relative; z-index: 1; }
+  .tl-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-prayer { background: var(--green); }
+  .dot-visit { background: var(--blue); }
+  .dot-food { background: var(--amber); }
+  .dot-rest { background: #b4b2a9; }
+  .dot-special { background: var(--pink); }
+  .dot-transport { background: #639922; }
+  .dot-option { background: var(--purple); }
+
+  .tl-content { flex: 1; padding-right: 12px; }
+  .tl-title { font-size: 14px; font-weight: 500; margin-bottom: 3px; }
+  .tl-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 5px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 5px; }
+  .badge {
+    display: inline-block; font-size: 10px; font-weight: 500;
+    padding: 2px 8px; border-radius: 12px;
+  }
+  .b-prayer { background: var(--green-light); color: var(--green-dark); }
+  .b-visit { background: var(--blue-light); color: var(--blue); }
+  .b-food { background: var(--amber-light); color: #633806; }
+  .b-rest { background: var(--gray-light); color: var(--gray); }
+  .b-special { background: var(--pink-light); color: #72243E; }
+  .b-transport { background: #EAF3DE; color: #27500A; }
+  .b-option { background: var(--purple-light); color: var(--purple); }
+
+  .links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 5px; }
+  .link {
+    font-size: 11px; color: var(--blue); text-decoration: none;
+    padding: 3px 10px; border: 1px solid var(--blue-light);
+    border-radius: 20px; background: var(--blue-light);
+    transition: all 0.15s;
+  }
+  .link:hover { background: var(--blue); color: #fff; }
+
+  /* Option box */
+  .option-wrap { display: flex; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+  .option-box {
+    flex: 1; min-width: 160px;
+    border: 1px solid var(--purple-light);
+    border-radius: 10px; padding: 10px 12px;
+    background: var(--purple-light);
+  }
+  .option-letter {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    background: var(--purple); color: #fff;
+    width: 18px; height: 18px; border-radius: 50%;
+    text-align: center; line-height: 18px; margin-bottom: 5px;
+  }
+  .option-name { font-size: 13px; font-weight: 500; color: var(--purple); margin-bottom: 3px; }
+  .option-desc { font-size: 11px; color: var(--text-muted); margin-bottom: 5px; }
+
+  /* Note box */
+  .note-box {
+    background: var(--green-light);
+    border-right: 3px solid var(--green);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-top: 24px;
+    font-size: 13px; color: var(--green-dark);
+  }
+  .note-box.amber { background: var(--amber-light); border-color: var(--amber); color: #633806; }
+
+  /* Footer */
+  footer {
+    text-align: center; padding: 40px 20px;
+    font-size: 12px; color: var(--text-muted);
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 480px) {
+    .hero { padding: 60px 16px 40px; }
+    .hero-stats { gap: 24px; }
+    .day-tab { padding: 14px 16px; font-size: 13px; }
+    .timeline::before { right: 63px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-eyebrow">رحلة خاصة</div>
+  <h1>المدينة المنورة ✦</h1>
+  <div class="hero-sub">٢٥ – ٢٧ يونيو ٢٠٢٦ · شخصان</div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">٣</div><div class="stat-label">أيام</div></div>
+    <div class="stat"><div class="stat-num">F3 225</div><div class="stat-label">رحلة الذهاب</div></div>
+    <div class="stat"><div class="stat-num">١:٢٠ ص</div><div class="stat-label">الروضة الشريفة</div></div>
+    <div class="stat"><div class="stat-num">F3 236</div><div class="stat-label">رحلة العودة</div></div>
+  </div>
+</div>
+
+<div class="prayer-section">
+  <span class="prayer-label">أوقات الصلاة</span>
+  <span class="prayer-pill">فجر ٤:٠٣</span>
+  <span class="prayer-pill">ظهر ١٢:٢٤</span>
+  <span class="prayer-pill">عصر ٣:٤٥</span>
+  <span class="prayer-pill">مغرب ٧:١٨</span>
+  <span class="prayer-pill">عشاء ٨:٤٨</span>
+  <span class="prayer-pill special">روضة ١:٢٠ ص — بوابة ٣٧</span>
+</div>
+
+<div class="days-nav">
+  <button class="day-tab active" onclick="showDay('d1')">الخميس ٢٥</button>
+  <button class="day-tab" onclick="showDay('d2')">الجمعة ٢٦</button>
+  <button class="day-tab" onclick="showDay('d3')">السبت ٢٧</button>
+</div>
+
+<div class="content">
+
+  <!-- Day 1 -->
+  <div id="d1" class="day-panel active">
+    <div class="day-header">
+      <div class="day-date">الخميس ٢٥ يونيو · يوم صيام</div>
+      <div class="day-title">الوصول والإفطار بالحرم 🕌</div>
+    </div>
+    <div class="timeline">
+
+      <div class="tl-item">
+        <div class="tl-time">١٠:١٥</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-transport"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">إقلاع من الرياض — F3 225</div>
+          <div class="tl-sub">فلاي أديل · أيرباص A320 · مطار الملك خالد</div>
+          <div class="badges"><span class="badge b-transport">طيران</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">١١:٤٠</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-transport"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">الوصول + أوبر للفندق</div>
+          <div class="tl-sub">صلاة الظهر بالطريق في أي مسجد</div>
+          <div class="badges"><span class="badge b-transport">أوبر</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">١:٠٠</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-rest"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">تشيك إن + راحة كاملة</div>
+          <div class="tl-sub">إيرلي تشيك إن مؤكد ✅ — استريحوا حتى العصر</div>
+          <div class="badges"><span class="badge b-rest">فندق</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">٣:١٥</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-visit"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">التحرك للحرم</div>
+          <div class="tl-sub">خذوا معكم تمر وعصير للإفطار</div>
+          <div class="badges"><span class="badge b-visit">مشي</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">٣:٤٥</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-prayer"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">صلاة العصر — المسجد النبوي</div>
+          <div class="badges"><span class="badge b-prayer">صلاة</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">٤:٠٠</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-visit"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">الجلوس بالحرم حتى المغرب</div>
+          <div class="tl-sub">قرآن، أجواء، انتظار الإفطار</div>
+          <div class="badges"><span class="badge b-visit">حرم</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">٧:١٨</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-food"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">إفطار بالحرم + صلاة المغرب</div>
+          <div class="badges"><span class="badge b-prayer">صلاة</span><span class="badge b-food">إفطار</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">٨:٠٠</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-rest"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">كافيه حول الحرم</div>
+          <div class="tl-sub">Row أو كفّه — مشي من الحرم</div>
+          <div class="badges"><span class="badge b-visit">مشي</span></div>
+          <div class="links">
+            <a class="link" href="https://www.instagram.com/rowcafe.sa/" target="_blank">Row ↗</a>
+            <a class="link" href="https://www.instagram.com/kiffaroaster/" target="_blank">كفّه ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">٨:٤٨</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-prayer"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">صلاة العشاء — المسجد النبوي</div>
+          <div class="badges"><span class="badge b-prayer">صلاة</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">٩:٣٠</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-food"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">عشاء بالحيّ — إذا جوعانين</div>
+          <div class="tl-sub">قولف كار للمغيسلة</div>
+          <div class="badges"><span class="badge b-food">عشاء</span><span class="badge b-transport">قولف كار</span></div>
+          <div class="links">
+            <a class="link" href="https://www.instagram.com/into_sushi/" target="_blank">Into Sushi ↗</a>
+            <a class="link" href="https://www.instagram.com/darbasma.sa/" target="_blank">دار بسمة ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">١١:٣٠</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-rest"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">العودة للفندق + قيلولة</div>
+          <div class="tl-sub">الروضة ١:٢٠ ص — استريحوا قبلها</div>
+          <div class="badges"><span class="badge b-rest">فندق</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">١:٢٠ ص</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-special"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">الروضة الشريفة — بوابة ٣٧</div>
+          <div class="tl-sub">مشي من الفندق · لا تتأخرين</div>
+          <div class="badges"><span class="badge b-special">الروضة</span><span class="badge b-visit">مشي</span></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="note-box amber">يوم صيام — لا أكل ولا شرب حتى ٧:١٨ م. الراحة بعد الوصول أهم شيء قبل التوجه للحرم.</div>
+  </div>
+
+  <!-- Day 2 -->
+  <div id="d2" class="day-panel">
+    <div class="day-header">
+      <div class="day-date">الجمعة ٢٦ يونيو</div>
+      <div class="day-title">تقميرة وقباء وليلة الاختيار 🌙</div>
+    </div>
+    <div class="timeline">
+
+      <div class="tl-item">
+        <div class="tl-time">٤:٠٣</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-prayer"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">صلاة الفجر — المسجد النبوي</div>
+          <div class="tl-sub">بعد الروضة مباشرة</div>
+          <div class="badges"><span class="badge b-prayer">صلاة</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">٧:٣٠</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-food"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">فطور تقميرة — الحيّ</div>
+          <div class="tl-sub">قولف كار للمغيسلة — بدري قبل ازدحام الجمعة</div>
+          <div class="badges"><span class="badge b-food">فطور</span><span class="badge b-transport">قولف كار</span></div>
+          <div class="links">
+            <a class="link" href="https://www.instagram.com/taqmera/" target="_blank">تقميرة ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">١٠:٠٠</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-rest"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">العودة للفندق — استراحة</div>
+          <div class="tl-sub">استعداد لصلاة الجمعة</div>
+          <div class="badges"><span class="badge b-rest">فندق</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">١١:٣٠</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-prayer"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">التحرك للحرم مبكراً</div>
+          <div class="tl-sub">ازدحام الجمعة شديد — لازم تأمنوا مكان</div>
+          <div class="badges"><span class="badge b-visit">مشي</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">١٢:٢٥</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-prayer"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">صلاة الجمعة — المسجد النبوي</div>
+          <div class="badges"><span class="badge b-prayer">صلاة</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">١:٣٠</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-food"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">غداء حول الحرم</div>
+          <div class="tl-sub">حر ٤٠ درجة — لا تبعدوا عن التكييف</div>
+          <div class="badges"><span class="badge b-food">غداء</span><span class="badge b-visit">مشي</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">٢:٣٠</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-rest"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">الفندق — راحة كاملة</div>
+          <div class="tl-sub">حر شديد، استريحوا حتى العصر</div>
+          <div class="badges"><span class="badge b-rest">فندق</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">٣:٤٥</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-prayer"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">صلاة العصر — المسجد النبوي</div>
+          <div class="badges"><span class="badge b-prayer">صلاة</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">٤:٣٠</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-visit"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">مسجد قباء + تجربة السيرة</div>
+          <div class="tl-sub">قولف كار — التجربة التفاعلية وقصص الرسول ﷺ</div>
+          <div class="badges"><span class="badge b-visit">زيارة</span><span class="badge b-transport">قولف كار</span></div>
+          <div class="links">
+            <a class="link" href="https://visitmadinahsa.com/sa-ar/destinations/--مسجد-قباء" target="_blank">مسجد قباء ↗</a>
+            <a class="link" href="https://visitmadinahsa.com/sa-ar/destinations/تجربة-السيرة---الرحلة-إلى-قباء" target="_blank">تجربة السيرة ↗</a>
+            <a class="link" href="https://visitmadinahsa.com/sa-ar/destinations/جادة-قباء" target="_blank">جادة قباء ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">٦:٣٠</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-visit"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">بئر غرس + بستان المستظل</div>
+          <div class="tl-sub">قريبة من قباء — قولف كار</div>
+          <div class="badges"><span class="badge b-visit">زيارة</span><span class="badge b-transport">قولف كار</span></div>
+          <div class="links">
+            <a class="link" href="https://visitmadinahsa.com/sa-ar/destinations/بئرغرس" target="_blank">بئر غرس ↗</a>
+            <a class="link" href="https://visitmadinahsa.com/sa-ar/destinations/بستان-المستظل-وبئر-عذق" target="_blank">بستان المستظل ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">٧:١٨</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-prayer"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">صلاة المغرب — مسجد قباء</div>
+          <div class="badges"><span class="badge b-prayer">صلاة</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">٧:٤٥</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-food"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">قهوة بمنطقة قباء</div>
+          <div class="tl-sub">مقاهي حول جادة قباء</div>
+          <div class="badges"><span class="badge b-food">قهوة</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">٨:٤٨</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-prayer"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">صلاة العشاء — المسجد النبوي</div>
+          <div class="tl-sub">قولف كار من قباء للحرم</div>
+          <div class="badges"><span class="badge b-prayer">صلاة</span><span class="badge b-transport">قولف كار</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">٩:٣٠</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-option"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">الليل — اختاري</div>
+          <div class="option-wrap">
+            <div class="option-box">
+              <div class="option-letter">أ</div>
+              <div class="option-name">Gliter Farm 🌿</div>
+              <div class="option-desc">عشاء بمزرعة · أجواء مميزة · أوبر</div>
+              <div class="links">
+                <a class="link" href="https://www.instagram.com/glitter.farm/" target="_blank">Gliter Farm ↗</a>
+              </div>
+            </div>
+            <div class="option-box">
+              <div class="option-letter">ب</div>
+              <div class="option-name">جبل أحد أو عير 🌙</div>
+              <div class="option-desc">قهوة + أجواء ليلية · أوبر</div>
+              <div class="links">
+                <a class="link" href="https://visitmadinahsa.com/sa-ar/experiences/lmdyn-lmnor/tours/jabal-uhud-experience-1" target="_blank">جبل أحد ↗</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">١١:٠٠</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-rest"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">العودة للفندق</div>
+          <div class="badges"><span class="badge b-rest">فندق</span></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="note-box">يوم مضغوط جميل — فطور الحيّ + جمعة + قباء + ليلة الاختيار. اطلبي قولف كار مسبقاً لرحلة قباء.</div>
+  </div>
+
+  <!-- Day 3 -->
+  <div id="d3" class="day-panel">
+    <div class="day-header">
+      <div class="day-date">السبت ٢٧ يونيو · يوم المغادرة</div>
+      <div class="day-title">وداع المدينة والعودة للرياض ✈️</div>
+    </div>
+    <div class="timeline">
+
+      <div class="tl-item">
+        <div class="tl-time">٤:٠٤</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-prayer"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">صلاة الفجر — المسجد النبوي</div>
+          <div class="tl-sub">آخر فجر بالمدينة المنورة</div>
+          <div class="badges"><span class="badge b-prayer">صلاة</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">٩:٠٠</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-visit"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">زيارة وداع — المسجد النبوي</div>
+          <div class="tl-sub">الزيارة النبوية الشريفة</div>
+          <div class="badges"><span class="badge b-visit">مشي</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">١٠:٣٠</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-visit"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">مساجد الصحابة + سوق المناخة</div>
+          <div class="tl-sub">مسجد الغمامة، علي، أبو بكر + تسوق هدايا — تمر، عطور، مسابح</div>
+          <div class="badges"><span class="badge b-visit">مشي</span></div>
+          <div class="links">
+            <a class="link" href="https://share.google/LshgwGhfPLUYdkwNX" target="_blank">خريطة المساجد ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">١٢:٠٠</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-rest"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">تشيك أوت + تخزين الشنط</div>
+          <div class="badges"><span class="badge b-rest">فندق</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">١٢:٢٥</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-prayer"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">صلاة الظهر — المسجد النبوي</div>
+          <div class="badges"><span class="badge b-prayer">صلاة</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">١:٣٠</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-rest"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">قهوة حول الحرم</div>
+          <div class="tl-sub">Row أو كفّه — مشي</div>
+          <div class="badges"><span class="badge b-visit">مشي</span></div>
+          <div class="links">
+            <a class="link" href="https://www.instagram.com/rowcafe.sa/" target="_blank">Row ↗</a>
+            <a class="link" href="https://www.instagram.com/kiffaroaster/" target="_blank">كفّه ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">٣:٠٠</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-food"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">غداء بالمغيسلة (الحيّ)</div>
+          <div class="tl-sub">آخر وجبة بالمدينة — قولف كار</div>
+          <div class="badges"><span class="badge b-food">غداء</span><span class="badge b-transport">قولف كار</span></div>
+          <div class="links">
+            <a class="link" href="https://www.instagram.com/darbasma.sa/" target="_blank">دار بسمة ↗</a>
+            <a class="link" href="https://www.instagram.com/into_sushi/" target="_blank">Into Sushi ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">٤:٣٠</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-rest"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">العودة للفندق + استلام الشنط</div>
+          <div class="tl-sub">آخر لحظات بالمدينة المنورة</div>
+          <div class="badges"><span class="badge b-rest">فندق</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">٥:١٥</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-transport"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">أوبر للمطار</div>
+          <div class="tl-sub">اطلبيه مسبقاً — ~٢٠ دقيقة للمطار</div>
+          <div class="badges"><span class="badge b-transport">أوبر</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">٧:٤٠</div>
+        <div class="tl-dot-wrap"><div class="tl-dot dot-transport"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">رحلة العودة — F3 236</div>
+          <div class="tl-sub">فلاي أديل · وصول الرياض ٩:٠٥ م</div>
+          <div class="badges"><span class="badge b-transport">طيران</span></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="note-box">اطلبي أوبر المطار الساعة ٥:٠٠ م — تكونين بالمطار ٥:٣٠ م وعندك ساعتين قبل الإقلاع.</div>
+  </div>
+
+</div>
+
+<footer>
+  رحلة المدينة المنورة · ٢٥–٢٧ يونيو ٢٠٢٦ · تصميم خاص
+</footer>
+
+<script>
+function showDay(id) {
+  document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  var map = { d1: 0, d2: 1, d3: 2 };
+  document.querySelectorAll('.day-tab')[map[id]].classList.add('active');
+}
+</script>
+</body>
+</html>
